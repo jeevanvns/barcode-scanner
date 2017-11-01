@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/RMBarCodeTest.iml" filepath="$PROJECT_DIR$/RMBarCodeTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/barcode-library/barcode-library.iml" filepath="$PROJECT_DIR$/barcode-library/barcode-library.iml" />
+    </modules>
+  </component>
+</project>
