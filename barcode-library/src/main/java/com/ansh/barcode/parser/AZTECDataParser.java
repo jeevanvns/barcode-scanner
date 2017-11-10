@@ -22,7 +22,7 @@ public class AZTECDataParser {
      */
     public static HashMap<String, String> BoardingPass(String rawData) {
         String[] barcodeDataArray = rawData.replaceAll("\\s+", " ").split(" ");
-        //todo definde pattern matcher and  match pattern with raw data,handle exception
+        //todo define pattern matcher and  match pattern with raw data,handle exception
         try {
             HashMap<String, String> data = new HashMap<>();
             data.put("name", (barcodeDataArray[0] + "/" + barcodeDataArray[1]));
