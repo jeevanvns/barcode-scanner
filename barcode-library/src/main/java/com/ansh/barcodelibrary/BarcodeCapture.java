@@ -29,6 +29,7 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -39,8 +40,6 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
 
-import com.ansh.barcode.parser.AZTECDataParser;
-import com.ansh.barcode.parser.Pdf417DataParser;
 import com.ansh.barcode.util.DocumentType;
 import com.ansh.barcodelibrary.ui.CameraSource;
 import com.ansh.barcodelibrary.ui.CameraSourcePreview;
@@ -434,20 +433,50 @@ public final class BarcodeCapture extends AppCompatActivity implements BarcodeGr
 
     @Override
     public void onBarcodeDetected(Barcode barcode) {
-        Log.e(TAG, "onBarcodeDetected: ");
+        barCodeListener.onSuccess(barcode, DocumentType.BOARDING_PASS, new HashMap<String, String>());
+        this.finish();
+  /*      String s = (barcode.format == Barcode.AZTEC) ? "AZTEC"
+                : (barcode.format == Barcode.QR_CODE ? "QR_CODE"
+                : (barcode.format == Barcode.CODE_128 ? "CODE_128"
+                : (barcode.format == Barcode.CODE_39 ? "CODE_39"
+                : (barcode.format == Barcode.CODE_93 ? "CODE_93"
+                : (barcode.format == Barcode.CODABAR ? "CODABAR"
+                : (barcode.format == Barcode.DATA_MATRIX ? "DATA_MATRIX"
+                : (barcode.format == Barcode.EAN_13 ? "EAN_13"
+                : (barcode.format == Barcode.EAN_8 ? "EAN_8"
+                : (barcode.format == Barcode.ITF ? "ITF"
+                : (barcode.format == Barcode.UPC_A ? "UPC_A"
+                : (barcode.format == Barcode.UPC_E ? "UPC_E"
+                : (barcode.format == Barcode.PDF417 ? "PDF417"
+                : (barcode.format == Barcode.ISBN ? "ISBN"
+                : "unknown")))))))))))));
+        Log.e(TAG, "onBarcodeDetected: format :  " + barcode.format + " value format : " + s + " raw data : " + barcode.rawValue);
+
+
+
         switch (barcode.format) {
             case Barcode.AZTEC:
-                barCodeListener.onSuccess(barcode, DocumentType.BOARDING_PASS, AZTECDataParser.BoardingPass(barcode.rawValue));
-                finish();
+                HashMap<String, String> dataAZTEC = AZTECDataParser.BoardingPass(barcode.rawValue);
+                if (dataAZTEC != null) {
+                    barCodeListener.onSuccess(barcode, DocumentType.BOARDING_PASS, dataAZTEC);
+                } else {
+                    barCodeListener.onFailure("This was a problem with barcode.please try again");
+                }
+                this.finish();
                 break;
             case Barcode.PDF417:
-                barCodeListener.onSuccess(barcode, DocumentType.BOARDING_PASS, Pdf417DataParser.BoardingPass(barcode.rawValue));
-                finish();
+                HashMap<String, String> dataPDF417 = Pdf417DataParser.BoardingPass(barcode.rawValue);
+                if (dataPDF417 != null) {
+                    barCodeListener.onSuccess(barcode, DocumentType.BOARDING_PASS, dataPDF417);
+                } else {
+                    barCodeListener.onFailure("This was a problem with barcode.please try again");
+                }
+                this.finish();
                 break;
             default:
-                barCodeListener.onFailure("Unable to read bar code data");
-                finish();
-        }
+                barCodeListener.onFailure("This was a problem with barcode.please try again");
+                this.finish();
+        }*/
     }
 
 
@@ -455,12 +484,11 @@ public final class BarcodeCapture extends AppCompatActivity implements BarcodeGr
         barCodeListener = onBarcodeListener;
     }
 
-
     public interface BarCodeListener {
+        @UiThread
         void onSuccess(Barcode barcode, String documentType, HashMap<String, String> data);
 
+        @UiThread
         void onFailure(String error);
     }
-
-
 }

@@ -1,5 +1,7 @@
 package com.ansh.barcode.parser;
 
+import android.util.Log;
+
 import com.ansh.barcode.util.Utils;
 
 import java.text.ParseException;
@@ -14,6 +16,12 @@ import java.util.HashMap;
 public class Pdf417DataParser {
     public static HashMap<String, String> BoardingPass(String rawData) {
         String[] barcodeDataArray = rawData.replaceAll("\\s+", " ").split(" ");
+        StringBuilder temp = new StringBuilder();
+        for (String s : barcodeDataArray) {
+            temp.append(" ").append(s);
+        }
+        Log.e("Parser", "BoardingPass: PDF417 " + temp);
+        Log.e("Parser", "BoardingPass: " + rawData);
         try {
             HashMap<String, String> data = new HashMap<>();
             data.put("name", barcodeDataArray[0]);
@@ -29,7 +37,7 @@ public class Pdf417DataParser {
             data.put("cabin", barcodeDataArray[4].substring(3, 4));
             data.put("seatNo", barcodeDataArray[4].substring(4, barcodeDataArray[4].length()));
             return data;
-        } catch (ParseException e) {
+        } catch (ParseException | IndexOutOfBoundsException | NullPointerException e) {
             return null;
         }
     }

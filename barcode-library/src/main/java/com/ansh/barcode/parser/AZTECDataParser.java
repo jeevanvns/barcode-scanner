@@ -1,5 +1,7 @@
 package com.ansh.barcode.parser;
 
+import android.util.Log;
+
 import com.ansh.barcode.util.Utils;
 
 import java.text.ParseException;
@@ -13,15 +15,21 @@ import java.util.HashMap;
 
 
 public class AZTECDataParser {
-
     /**
      * this method  is static u can use this using (.) with class name, this method parse azteck type of barcode data into boarding pass data
      * exp - name ,booking reference no, dep airport ,arrival airport, flight no etc.
+     *
      * @param rawData this is the barcode scan raw data
      * @return Boarding Pass Scan HashMap data , using key value you get the value
      */
     public static HashMap<String, String> BoardingPass(String rawData) {
         String[] barcodeDataArray = rawData.replaceAll("\\s+", " ").split(" ");
+        StringBuilder temp = new StringBuilder();
+        for (String s : barcodeDataArray) {
+            temp.append(" ").append(s);
+        }
+        Log.e("Parser", "BoardingPass: " + temp);
+        Log.e("Parser", "BoardingPass: " + rawData);
         //todo define pattern matcher and  match pattern with raw data,handle exception
         try {
             HashMap<String, String> data = new HashMap<>();
@@ -38,7 +46,7 @@ public class AZTECDataParser {
             data.put("cabin", barcodeDataArray[5].substring(3, 4));
             data.put("seatNo", barcodeDataArray[5].substring(4, barcodeDataArray[5].length()));
             return data;
-        } catch (ParseException e) {
+        } catch (ParseException | IndexOutOfBoundsException | NullPointerException e) {
             return null;
         }
     }
