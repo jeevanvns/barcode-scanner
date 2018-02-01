@@ -29,7 +29,6 @@ import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,7 +39,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
 
-import com.ansh.barcode.util.DocumentType;
+import com.ansh.barcode.parser.BoardingPass;
+import com.ansh.barcode.parser.BoardingPassParser;
 import com.ansh.barcodelibrary.ui.CameraSource;
 import com.ansh.barcodelibrary.ui.CameraSourcePreview;
 import com.ansh.barcodelibrary.ui.GraphicOverlay;
@@ -51,7 +51,6 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * Activity for the multi-tracker app.  This app detects barcodes and displays the value with the
@@ -60,6 +59,7 @@ import java.util.HashMap;
  */
 public final class BarcodeCapture extends AppCompatActivity implements BarcodeGraphicTracker.BarcodeUpdateListener {
     private static final String TAG = "Barcode-reader";
+    public static final int SCAN = 1009;
 
     // intent request code to handle updating play services if needed.
     private static final int RC_HANDLE_GMS = 9001;
@@ -294,7 +294,7 @@ public final class BarcodeCapture extends AppCompatActivity implements BarcodeGr
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Multitracker sample")
+        builder.setTitle("Alert")
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show();
@@ -433,8 +433,22 @@ public final class BarcodeCapture extends AppCompatActivity implements BarcodeGr
 
     @Override
     public void onBarcodeDetected(Barcode barcode) {
-        barCodeListener.onSuccess(barcode, DocumentType.BOARDING_PASS, new HashMap<String, String>());
-        this.finish();
+        BoardingPass data = new BoardingPassParser(barcode.rawValue).parse();
+        if (data != null) {
+            Intent intent = new Intent();
+            intent.putExtra(BarcodeObject, data);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+        } else {
+            finish();
+        }
+
+      /*  if (data != null) {
+            barCodeListener.onSuccess(barcode, DocumentType.BOARDING_PASS, data);
+        } else {
+            barCodeListener.onFailure(barcode, "This was a problem with barcode.please try again");
+        }*/
+
   /*      String s = (barcode.format == Barcode.AZTEC) ? "AZTEC"
                 : (barcode.format == Barcode.QR_CODE ? "QR_CODE"
                 : (barcode.format == Barcode.CODE_128 ? "CODE_128"
@@ -456,7 +470,7 @@ public final class BarcodeCapture extends AppCompatActivity implements BarcodeGr
 
         switch (barcode.format) {
             case Barcode.AZTEC:
-                HashMap<String, String> dataAZTEC = AZTECDataParser.BoardingPass(barcode.rawValue);
+                HashMap<String, String> dataAZTEC = BoardingPassParser.BoardingPass(barcode.rawValue);
                 if (dataAZTEC != null) {
                     barCodeListener.onSuccess(barcode, DocumentType.BOARDING_PASS, dataAZTEC);
                 } else {
@@ -485,10 +499,9 @@ public final class BarcodeCapture extends AppCompatActivity implements BarcodeGr
     }
 
     public interface BarCodeListener {
-        @UiThread
-        void onSuccess(Barcode barcode, String documentType, HashMap<String, String> data);
+        void onSuccess(Barcode barcode, String documentType, BoardingPass data);
 
-        @UiThread
-        void onFailure(String error);
+        void onFailure(Barcode barcode, String error);
     }
+
 }

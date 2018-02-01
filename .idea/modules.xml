@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/RMBarCodeTest.iml" filepath="$PROJECT_DIR$/RMBarCodeTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/barcode-library/barcode-library.iml" filepath="$PROJECT_DIR$/barcode-library/barcode-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/boarding-parser/boarding-parser.iml" filepath="$PROJECT_DIR$/boarding-parser/boarding-parser.iml" />
     </modules>
   </component>
 </project>

@@ -1,1 +1,1 @@
-include ':app', ':barcode-library'
+include ':app', ':barcode-library', ':boarding-parser'
