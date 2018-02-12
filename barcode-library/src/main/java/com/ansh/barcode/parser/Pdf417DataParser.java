@@ -14,6 +14,11 @@ import java.util.HashMap;
  */
 
 public class Pdf417DataParser {
+    public static int JGREG= 15 + 31*(10+12*1582);
+    public static double HALFSECOND = 0.5;
+
+
+
     public static HashMap<String, String> BoardingPass(String rawData) {
         String[] barcodeDataArray = rawData.replaceAll("\\s+", " ").split(" ");
         StringBuilder temp = new StringBuilder();
@@ -40,5 +45,29 @@ public class Pdf417DataParser {
         } catch (ParseException | IndexOutOfBoundsException | NullPointerException e) {
             return null;
         }
+    }
+
+
+    public static int[] fromJulian(double injulian) {
+        int jalpha,ja,jb,jc,jd,je,year,month,day;
+        double julian = injulian + HALFSECOND / 86400.0;
+        ja = (int) injulian;
+        if (ja>= JGREG) {
+            jalpha = (int) (((ja - 1867216) - 0.25) / 36524.25);
+            ja = ja + 1 + jalpha - jalpha / 4;
+        }
+
+        jb = ja + 1524;
+        jc = (int) (6680.0 + ((jb - 2439870) - 122.1) / 365.25);
+        jd = 365 * jc + jc / 4;
+        je = (int) ((jb - jd) / 30.6001);
+        day = jb - jd - (int) (30.6001 * je);
+        month = je - 1;
+        if (month > 12) month = month - 12;
+        year = jc - 4715;
+        if (month > 2) year--;
+        if (year <= 0) year--;
+
+        return new int[] {year, month, day};
     }
 }

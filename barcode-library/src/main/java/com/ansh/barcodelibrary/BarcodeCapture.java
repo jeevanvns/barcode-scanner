@@ -111,7 +111,7 @@ public final class BarcodeCapture extends AppCompatActivity implements BarcodeGr
         gestureDetector = new GestureDetector(this, new CaptureGestureListener());
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
-        Snackbar.make(mGraphicOverlay, "Tap to capture. Pinch/Stretch to zoom",
+        Snackbar.make(mGraphicOverlay, "Note - Currently we supported limited number of Boarding passes.",
                 Snackbar.LENGTH_LONG)
                 .show();
     }

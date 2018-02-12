@@ -21,6 +21,9 @@ public class BoardingPassParser {
     public BoardingPass parse() {
         try {
             IataCode parse = new Parser().parse(rawData);
+
+
+            int[] ints = Pdf417DataParser.fromJulian(062);
             BoardingPass barcode = new BoardingPass();
             barcode.setName(parse.getPassengerFirstName() + " " + parse.getPassengerLastName());
             barcode.setBookingReference(parse.getFirstFlightSegment().getPNR());
@@ -36,7 +39,7 @@ public class BoardingPassParser {
             barcode.setCabin(parse.getFirstFlightSegment().getCompartmentCode().getDescription());
             barcode.setSeatNo(parse.getFirstFlightSegment().getSeatNumber());
             return barcode;
-        } catch (com.ansh.bpbarcodeparser.main.ParseException |NumberFormatException| NullPointerException e) {
+        } catch (com.ansh.bpbarcodeparser.main.ParseException | NumberFormatException | NullPointerException e) {
             e.printStackTrace();
             return null;
         }
